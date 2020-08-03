@@ -30,9 +30,9 @@ class Enemy():
 		if self.triangle.right < 0:
 			self.state = enemy_done
 
-	def update(self, dt):
+	def update(self, dt, speed):
 		if self.state == enemy_moving:
-			self.move_position(-(enemy_speed * dt), 0)
+			self.move_position(-(speed * dt), 0)
 			self.draw()
 			self.check_status()
 
@@ -42,6 +42,7 @@ class EnemyCollection():
 	def __init__(self, gameDisplay):
 		self.gameDisplay = gameDisplay
 		self.enemies = []
+		self.speed = enemy_speed
 
 	def add_new_enemy(self, x):
 		rand_x = random.randint(enemy_min_gap, enemy_gap_size)
@@ -58,11 +59,17 @@ class EnemyCollection():
 			self.add_new_enemy(placed)
 			placed += enemy_min_gap
 
+	def update_speed(self):
+		self.speed += 100/1000
+
+	def reset_speed(self):
+		self.speed = enemy_speed
+
 	def update(self, dt):
 		rightmost = 0
 
 		for e in self.enemies:
-			e.update(dt)
+			e.update(dt, self.speed)
 			if e.triangle.left > rightmost:
 				rightmost = e.triangle.left
 		#print(rightmost)
